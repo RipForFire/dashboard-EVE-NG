@@ -9,7 +9,7 @@ Dashboard EVE-NG is a web-based application that displays the EVE-NG templates i
 1. Run the following command to download the project:
 
     ```
-    wget https://github.com/username/project-name/archive/refs/heads/master.zip
+    wget https://github.com/RipForFire/dashboard-EVE-NG/archive/refs/heads/master.zip
     ```
 
 2. Unzip the downloaded file:
@@ -21,7 +21,7 @@ Dashboard EVE-NG is a web-based application that displays the EVE-NG templates i
 3. Change directory to the project folder:
 
     ```
-    cd project-name-master
+    cd dashboard-EVE-NG-master
     ```
 
 4. Run the setup script:
@@ -45,7 +45,7 @@ To update the application to the latest version, follow these steps:
 1. Remove the existing project folder:
 
     ```
-    rm -r project-name-master
+    rm -r dashboard-EVE-NG-master
     ```
 
 2. Remove the downloaded zip file:
