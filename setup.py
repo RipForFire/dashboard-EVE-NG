@@ -5,7 +5,7 @@ import os
 os.system("sudo apt-get update")
 
 # Command to install python3-pip
-os.system("sudo apt-get install python3-pip")
+os.system("sudo apt-get install python3-pip -y")
 
 # Install the required packages in the requirements.txt file
 os.system("pip3 install -r requirements.txt")
