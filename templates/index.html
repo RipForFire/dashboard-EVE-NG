@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <title>EVE-NG templates dashboard</title>
+</head>
+<body>
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table" id="main">
+                <thead>
+                    <tr>
+                        <td>
+                            <form action="/create" method="post" style="display: flex;">
+                                <input type="text" class="form-control" name="folder" placeholder="New template folder" required>
+                                <button class="btn btn-success" type="submit">Create</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form action="/fix" method="post">
+                                <button class="btn btn-warning" type="submit">Fix permissions</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="col">Templates</th>
+                        <th scope="col" width="15%">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in data %}
+                    <tr class="bg-light text-dark" data-folder="{{ item.folder }}">
+                        <td>{{ loop.index }} | {{ item.folder }}</td>
+                        <td>
+                            <button class="btn btn-primary show-files">Files</button>
+                            <button class="btn btn-secondary show-actions">Actions</button>
+                        </td>
+                        <td style="display:none;">{{ item.files|tojson|safe }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="loading" style="display: none;">
+        <img src="https://media.tenor.com/wpSo-8CrXqUAAAAi/loading-loading-forever.gif" alt="Loading" />
+    </div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function() {
+        $('form[method="post"]').on('submit', function () {
+        $('#loading').show();
+    });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        function formatFiles(files) {
+            var html = '<table class="table">';
+            for (var i = 0; i < files.length; i++) {
+                html += '<tr><td>' + files[i] + '</td><td><button class="btn btn-secondary show-file-actions">Actions</button></td></tr>';
+            }
+            html += '</table>';
+            return html;
+        }
+
+    function formatFileActions(folder, file) {
+    var html = '<table class="table">' +
+        '<tr>' +
+            '<td style="text-align: center;"><form action="/delete/file" method="post"><input type="hidden" name="folder" value="' + folder + '"><input type="hidden" name="file" value="' + file + '"><button class="btn btn-danger" type="submit">Delete</button></form></td>' +
+            '<td style="text-align: center;"><form action="/rename/file" method="post"><input type="hidden" name="folder" value="' + folder + '"><input type="hidden" name="file" value="' + file + '"><input type="text" class="form-control rename-input" name="new_name" style="display:inline-block;width:auto;"><button class="btn btn-warning" type="submit">Rename</button></form></td>' +
+        '</tr>' +
+    '</table>';
+    return html;
+}
+
+    function formatActions(folder) {
+    var html = '<table class="table">' +
+        '<tr>' +
+            '<td style="text-align: center;"><form action="/delete/folder" method="post"><input type="hidden" name="folder" value="' + folder + '"><button class="btn btn-danger" type="submit">Delete</button></form></td>' +
+            '<td style="text-align: center;"><form action="/rename/folder" method="post"><input type="hidden" name="folder" value="' + folder + '"><input type="text" class="form-control rename-input" name="new_name" style="display:inline-block;width:auto;"><button class="btn btn-warning" type="submit">Rename</button></form></td>' +
+            '<td style="text-align: center;"><form action="/upload" method="post" enctype="multipart/form-data"><input type="hidden" name="folder" value="' + folder + '"><input type="file" name="file" required><button class="btn btn-success" type="submit">Upload</button></form></td>' +
+        '</tr>' +
+    '</table>';
+    return html;
+}
+
+    var table = $('#main').DataTable({
+        language: {
+            searchPlaceholder: "Search templates...",
+            search: "",
+        },
+        "info": false,
+        "columns": [
+            { "orderable": true },
+            { "orderable": false },
+            { "visible": false }
+        ]
+    });
+
+    $('#main tbody').on('click', '.show-files', function (event) {
+        event.stopPropagation();
+        var tr = $(this).closest('tr');
+        var row = table.row(tr);
+
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            var files = JSON.parse(row.data()[2]);
+            row.child(formatFiles.call(this, files)).show();
+            tr.addClass('shown');
+        }
+    });
+
+    $('#main tbody').on('click', '.show-actions', function (event) {
+        event.stopPropagation();
+        var tr = $(this).closest('tr');
+        var row = table.row(tr);
+        var folder = tr.data('folder');
+
+        console.log('Folder:', folder); // Debugging line
+
+        if (row.child.isShown()) {
+            row.child.hide();
+            tr.removeClass('shown');
+        } else {
+            row.child(formatActions(folder)).show();
+            tr.addClass('shown');
+        }
+    });
+
+    $('body').on('click', '.show-file-actions', function (event) {
+        event.stopPropagation();
+        var tr = $(this).closest('tr');
+        var file = tr.find('td:first-child').text();
+        var folder = tr.closest('table').closest('tr').prev().data('folder');
+        var subTable = tr.closest('table');
+        var actionsRow = subTable.find('.file-actions-row');
+
+        if (actionsRow.length) {
+            actionsRow.remove();
+        } else {
+            tr.after('<tr class="file-actions-row"><td colspan="2">' + formatFileActions(folder, file) + '</td></tr>');
+        }
+    });
+});
+</script>
+</body>
+</html>
