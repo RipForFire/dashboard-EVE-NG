@@ -1,9 +1,8 @@
-# Run the command to install python3-pip 
-# Install the required packages in the requirements.txt file
-# Print success message or error message
-
 # Import the required packages
 import os
+
+# Command to update the package list
+os.system("sudo apt-get update")
 
 # Command to install python3-pip
 os.system("sudo apt-get install python3-pip")
