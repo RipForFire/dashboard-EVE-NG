@@ -58,5 +58,12 @@ def fix():
     file_mgmt.fix_perms()
     return redirect(url_for('hello'))
 
+@app.route('/disk', methods=['POST'])
+def disk():
+    size = request.form['size']
+    folder = request.form['folder']
+    file_mgmt.drive(size, folder)
+    return redirect(url_for('hello'))
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000, host='0.0.0.0')

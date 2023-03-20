@@ -88,10 +88,13 @@
     function formatActions(folder) {
     var html = '<table class="table">' +
         '<tr>' +
-            '<td style="text-align: center;"><form action="/delete/folder" method="post"><input type="hidden" name="folder" value="' + folder + '"><button class="btn btn-danger" type="submit">Delete</button></form></td>' +
-            '<td style="text-align: center;"><form action="/rename/folder" method="post"><input type="hidden" name="folder" value="' + folder + '"><input type="text" class="form-control rename-input" name="new_name" style="display:inline-block;width:auto;"><button class="btn btn-warning" type="submit">Rename</button></form></td>' +
-            '<td style="text-align: center;"><form action="/upload" method="post" enctype="multipart/form-data"><input type="hidden" name="folder" value="' + folder + '"><input type="file" name="file" required><button class="btn btn-success" type="submit">Upload</button></form></td>' +
+            '<td style="text-align: right;"><form action="/upload" method="post" enctype="multipart/form-data"><input type="hidden" name="folder" value="' + folder + '"><input type="file" name="file" required><button class="btn btn-success" type="submit">Upload</button></form></td>' +
+            '<td style="padding-left: 19%;"><form action="/delete/folder" method="post"><input type="hidden" name="folder" value="' + folder + '"><button class="btn btn-danger" type="submit">Delete</button></form></td>' +
         '</tr>' +
+        '<tr>' +    
+            '<td style="text-align: right;"><form action="/rename/folder" method="post"><input type="hidden" name="folder" value="' + folder + '"><input type="text" class="form-control rename-input" name="new_name" style="display:inline-block;width:auto;"><button class="btn btn-warning" type="submit">Rename</button></form></td>' +
+            '<td style="text-align: left;"><form action="/disk" method="post"><input type="hidden" name="folder" value="' + folder + '"><input type="number" class="form-control disk-input" name="size" style="display:inline-block;width:auto;" required><button class="btn btn-info" type="submit">Add Disk</button></form></td>' +
+            '</tr>' +
     '</table>';
     return html;
 }

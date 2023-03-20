@@ -49,3 +49,7 @@ def create_folder(folder):
 def fix_perms():
     os.system('/opt/unetlab/wrappers/unl_wrapper -a fixpermissions')
     return
+
+def drive(size, folder):
+    os.system('/opt/qemu/bin/qemu-img create -f qcow2 ' + path + '/' + folder + '/virtioa.qcow2 ' + size + 'G')
+    return
